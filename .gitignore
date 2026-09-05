@@ -1,0 +1,37 @@
+# Odoo runtime data
+filestore/
+sessions/
+*.log
+
+# Databases and backups
+*.dump
+*.sql
+*.backup
+*.zip
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+odoo.conf
+!odoo.conf.example
+
+# Python and JavaScript environments
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+htmlcov/
+node_modules/
+
+# Generated artifacts
+artifacts/
+dist/
+build/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
