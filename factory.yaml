@@ -1,0 +1,36 @@
+# Human-maintained contract between this product repository and the Odoo
+# Development Factory. Values marked null must be resolved before a governed run.
+schema_version: 1
+
+project:
+  id: customer-odoo
+  type: odoo-addons
+
+odoo:
+  version: null
+  edition: community
+  addon_paths:
+    - addons
+
+delivery:
+  repository: customer-odoo-delivery
+  local_path: ../customer-odoo-delivery
+
+conventions:
+  module_prefix: customer_
+  license: LGPL-3
+
+quality_gates:
+  required:
+    - manifest_validation
+    - lint
+    - clean_install
+    - production_snapshot_upgrade
+    - unit_tests
+    - browser_tests
+
+release:
+  integration_branch: develop
+  production_branch: main
+  require_qa_approval: true
+  require_production_upgrade_rehearsal: true

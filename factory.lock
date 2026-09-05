@@ -1,0 +1,19 @@
+# GENERATED FILE — DO NOT EDIT BY HAND.
+#
+# The factory bootstrap command will replace this unresolved scaffold with exact
+# versions and hashes. A governed or release-producing run must reject this file
+# while status is unresolved.
+lock_version: 1
+status: unresolved
+
+source:
+  configuration: factory.yaml
+  configuration_sha256: null
+
+resolved:
+  factory_release: null
+  schema_release: null
+  policy_packages: []
+  template_packages: []
+  agent_instruction_packages: []
+  validation_toolchain: []
