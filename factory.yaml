@@ -7,7 +7,7 @@ project:
   type: odoo-addons
 
 odoo:
-  version: null
+  version: 19.0, build 20260802
   edition: community
   addon_paths:
     - addons
