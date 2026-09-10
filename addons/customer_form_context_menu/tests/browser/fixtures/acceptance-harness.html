@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Customer form context-menu acceptance harness</title>
+  <style>
+    body { font: 16px system-ui, sans-serif; margin: 1rem; }
+    form, [role="dialog"], [data-surface="list"], [data-surface="kanban"] { border: 1px solid #888; margin: .75rem 0; padding: 1rem; }
+    [data-surface="notebook"] { min-height: 3rem; }
+    #menu { background: white; border: 2px solid #714b67; padding: .5rem; position: fixed; z-index: 2000; }
+  </style>
+</head>
+<body>
+  <main data-surface="main-form">
+    <form data-form-root="main-form">
+      <label>Main input <input aria-label="Main input"></label>
+      <label>Main text <textarea aria-label="Main text"></textarea></label>
+      <div data-surface="relational">Relational content</div>
+      <div data-surface="notebook" role="tabpanel" aria-label="Notebook page">Notebook content</div>
+      <div data-surface="empty-form-space" aria-label="Empty form space"></div>
+    </form>
+  </main>
+  <div role="dialog" data-surface="dialog-form">
+    <form data-form-root="dialog-form"><input aria-label="Dialog input"></form>
+  </div>
+  <form data-form-root="outer-form" data-surface="nested-outer">
+    <div data-surface="nested-inner"><form data-form-root="nested-form"><input aria-label="Nested input"></form></div>
+  </form>
+  <section data-surface="list" role="region" aria-label="List exclusion"><button type="button">List</button></section>
+  <section data-surface="kanban" role="region" aria-label="Kanban exclusion"><button type="button">Kanban</button></section>
+  <div id="menu" role="menu" aria-label="Context menu" hidden tabindex="-1"><div role="menuitem" tabindex="0">Harness command</div></div>
+  <output id="result" data-status="pending"></output>
+  <output id="console-capture"></output>
+  <script>
+    (() => {
+      const errors = [];
+      const originalError = console.error;
+      console.error = (...args) => { errors.push(args.join(" ")); originalError(...args); };
+      const result = document.querySelector("#result");
+      const menu = document.querySelector("#menu");
+      const checks = [];
+      let opened = 0;
+      let nativeOutside = 0;
+      let restoredFocus = false;
+      let lastTarget;
+
+      function check(name, value) { checks.push({ name, passed: Boolean(value) }); }
+      function owner(target) { return target.closest("[data-form-root]"); }
+      function open(target) {
+        const root = owner(target);
+        if (!root) { nativeOutside += 1; return false; }
+        lastTarget = document.activeElement;
+        menu.hidden = false;
+        menu.style.left = "8px";
+        menu.style.top = "8px";
+        menu.focus();
+        opened += 1;
+        return true;
+      }
+      function close() {
+        menu.hidden = true;
+        if (lastTarget && lastTarget.focus) { lastTarget.focus(); restoredFocus = true; }
+      }
+      document.addEventListener("contextmenu", (event) => {
+        if (owner(event.target) && open(event.target)) event.preventDefault();
+      }, true);
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "ContextMenu" || (event.key === "F10" && event.shiftKey)) {
+          if (owner(event.target) && open(event.target)) { event.preventDefault(); event.stopPropagation(); }
+        } else if (event.key === "Escape" && !menu.hidden) {
+          event.preventDefault(); close();
+        }
+      }, true);
+
+      const inside = [
+        { name: "main-form", selector: "[data-surface='main-form']" },
+        { name: "dialog-form", selector: "[data-surface='dialog-form']" },
+        { name: "nested-form", selector: "[data-surface='nested-form']" },
+        { name: "main input", selector: "[data-surface='main-form'] input" },
+        { name: "main textarea", selector: "[data-surface='main-form'] textarea" },
+        { name: "relational", selector: "[data-surface='relational']" },
+        { name: "notebook", selector: "[data-surface='notebook']" },
+        { name: "empty-form-space", selector: "[data-surface='empty-form-space']" },
+        { name: "nested-inner", selector: "[data-surface='nested-inner']" },
+      ];
+      for (const { name, selector } of inside) {
+        const target = document.querySelector(selector);
+        if (!target) { check(`${name} fixture`, false); continue; }
+        const event = new MouseEvent("contextmenu", { bubbles: true, cancelable: true });
+        target.dispatchEvent(event);
+        check(`${name} handled`, event.defaultPrevented);
+        close();
+      }
+      for (const surface of ["list", "kanban"]) {
+        const target = document.querySelector(`[data-surface="${surface}"] button`);
+        const event = new MouseEvent("contextmenu", { bubbles: true, cancelable: true });
+        target.dispatchEvent(event);
+        check(`${surface} retains native menu`, !event.defaultPrevented);
+      }
+      const keyboardTarget = document.querySelector("[data-surface='dialog-form'] input");
+      keyboardTarget.focus();
+      const keyboardEvent = new KeyboardEvent("keydown", { key: "F10", shiftKey: true, bubbles: true, cancelable: true });
+      keyboardTarget.dispatchEvent(keyboardEvent);
+      check("Shift+F10 opens one menu", keyboardEvent.defaultPrevented && opened === inside.length + 1);
+      const escape = new KeyboardEvent("keydown", { key: "Escape", bubbles: true, cancelable: true });
+      document.dispatchEvent(escape);
+      check("Escape restores focus", escape.defaultPrevented && restoredFocus && document.activeElement === keyboardTarget);
+      check("one menu element exists", document.querySelectorAll('[role="menu"]').length === 1);
+      check("menu has accessible item", Boolean(menu.querySelector('[role="menuitem"]')));
+      check("no unexpected console errors", errors.length === 0);
+      document.querySelector("#console-capture").textContent = JSON.stringify(errors);
+      const passed = checks.every(({ passed }) => passed);
+      result.dataset.status = passed ? "passed" : "failed";
+      result.textContent = JSON.stringify({ passed, opened, nativeOutside, checks });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Customer form context-menu harness</title></head>
+<body>
+  <main data-surface="main-form">
+    <form data-form-root="main-form"><input aria-label="Main form field"></form>
+  </main>
+  <div role="dialog" data-surface="dialog-form">
+    <form data-form-root="dialog-form"><textarea aria-label="Dialog form field"></textarea></form>
+  </div>
+  <section data-surface="nested-form">
+    <div data-form-root="nested-form"><input aria-label="Nested form field"></div>
+  </section>
+  <section data-surface="outside-surface"><button type="button">Outside form</button></section>
+  <output id="smoke-result" data-status="pending">pending</output>
+  <script>
+    const expected = ["main-form", "dialog-form", "nested-form", "outside-surface"];
+    const found = expected.every((name) => document.querySelector(`[data-surface="${name}"]`));
+    const forms = document.querySelectorAll("[data-form-root]").length === 3;
+    const dialog = document.querySelector("[role=dialog] [data-form-root=dialog-form]");
+    const result = document.querySelector("#smoke-result");
+    const passed = found && forms && Boolean(dialog);
+    result.dataset.status = passed ? "passed" : "failed";
+    result.textContent = passed ? "surface harness passed" : "surface harness failed";
+  </script>
+</body>
+</html>

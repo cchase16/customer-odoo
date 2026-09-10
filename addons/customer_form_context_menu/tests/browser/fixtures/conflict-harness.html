@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Customer form context menu conflict and lifecycle harness</title>
+    <style>
+        body { font: 16px sans-serif; margin: 2rem; }
+        form { border: 1px solid #888; margin: 1rem 0; padding: 1rem; }
+        #menu { background: white; border: 1px solid #444; padding: .5rem; }
+    </style>
+</head>
+<body>
+    <h1>Event precedence and lifecycle harness</h1>
+    <form id="preempted" data-form-root><label>Third-party preempted <input></label></form>
+    <form id="normal" data-form-root><label>Coordinator-owned <input></label></form>
+    <div id="menu" role="menu" hidden><div role="menuitem">Refresh record</div></div>
+    <pre id="result" data-status="running"></pre>
+    <script>
+        (() => {
+            const errors = [];
+            const originalError = console.error;
+            console.error = (...args) => { errors.push(args.join(" ")); originalError(...args); };
+            const menu = document.querySelector("#menu");
+            const result = document.querySelector("#result");
+            let opened = 0;
+            let coordinatorActive = true;
+            const thirdPartyPreemptor = (event) => {
+                if (event.target.closest("#preempted")) event.preventDefault();
+            };
+            document.addEventListener("contextmenu", thirdPartyPreemptor, true);
+            const coordinator = (event) => {
+                if (!coordinatorActive || event.defaultPrevented) return;
+                if (!event.target.closest("[data-form-root]")) return;
+                event.preventDefault();
+                menu.hidden = false;
+                opened += 1;
+            };
+            document.addEventListener("contextmenu", coordinator, true);
+            const close = () => { menu.hidden = true; };
+
+            try {
+                const preempted = new MouseEvent("contextmenu", { bubbles: true, cancelable: true });
+                document.querySelector("#preempted input").dispatchEvent(preempted);
+                if (!preempted.defaultPrevented || !menu.hidden || opened !== 0) {
+                    throw new Error("third-party interception did not retain native ownership");
+                }
+
+                const normal = new MouseEvent("contextmenu", { bubbles: true, cancelable: true });
+                document.querySelector("#normal input").dispatchEvent(normal);
+                if (!normal.defaultPrevented || menu.hidden || opened !== 1) {
+                    throw new Error("coordinator did not own a valid form event");
+                }
+                close();
+                const second = new MouseEvent("contextmenu", { bubbles: true, cancelable: true });
+                document.querySelector("#normal input").dispatchEvent(second);
+                if (!second.defaultPrevented || opened !== 2) throw new Error("repeat activation was not deterministic");
+                close();
+
+                coordinatorActive = false;
+                document.removeEventListener("contextmenu", coordinator, true);
+                const afterCleanup = new MouseEvent("contextmenu", { bubbles: true, cancelable: true });
+                document.querySelector("#normal input").dispatchEvent(afterCleanup);
+                if (afterCleanup.defaultPrevented || !menu.hidden) throw new Error("cleanup did not restore native behavior");
+                document.removeEventListener("contextmenu", thirdPartyPreemptor, true);
+                if (errors.length) throw new Error("unexpected console errors: " + errors.join(" | "));
+                result.dataset.status = "passed";
+                result.textContent = JSON.stringify({ status: "passed", opened, nativeAfterCleanup: !afterCleanup.defaultPrevented });
+            } catch (error) {
+                result.dataset.status = "failed";
+                result.textContent = JSON.stringify({ status: "failed", error: String(error), opened, errors });
+            }
+        })();
+    </script>
+</body>
+</html>
