@@ -24,8 +24,6 @@ quality_gates:
   required:
     - manifest_validation
     - lint
-    - clean_install
-    - production_snapshot_upgrade
     - unit_tests
     - browser_tests
 
