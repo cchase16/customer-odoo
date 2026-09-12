@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_alert_rule_wizard_form" model="ir.ui.view">
+        <field name="name">alert.rule.wizard.form</field>
+        <field name="model">alert.rule.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Create a custom alert">
+                <sheet>
+                    <field name="step" invisible="1"/>
+                    <group invisible="step != 'configure'">
+                        <field name="name"/>
+                        <field name="model_id"/>
+                        <field name="event_type"/>
+                        <field name="field_id" domain="[('model_id', '=', model_id)]" invisible="event_type in ['record_created', 'record_deleted']"/>
+                        <field name="comparison_value_json" invisible="event_type not in ['field_becomes', 'field_is_no_longer']"/>
+                        <field name="scope_type"/>
+                        <field name="source_record_id" invisible="1"/>
+                        <field name="scope_domain_json" invisible="scope_type != 'captured_domain'"/>
+                        <field name="condition_domain_input" widget="domain" options="{'model': model_id.model, 'allow_expressions': False}"/>
+                        <field name="expires_at"/>
+                    </group>
+                    <group string="Relative date" invisible="event_type not in ['date_relative_before', 'date_relative_after'] or step != 'configure'">
+                        <field name="date_offset_amount"/>
+                        <field name="date_offset_unit"/>
+                        <field name="date_offset_direction"/>
+                    </group>
+                    <group string="Contents" invisible="step != 'configure'">
+                        <field name="subject_template"/>
+                        <field name="message_template"/>
+                        <field name="recipient_user_id"/>
+                        <field name="organization_wide" groups="cw_custom_alerts.group_alert_manager"/>
+                        <field name="send_email"/>
+                    </group>
+                    <group invisible="step != 'review'">
+                        <field name="review_text" nolabel="1"/>
+                        <field name="preview_count" readonly="1"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_preview" type="object" string="Preview" class="btn-secondary" invisible="step != 'configure'"/>
+                    <button name="action_review" type="object" string="Review" class="btn-primary" invisible="step != 'configure'"/>
+                    <button name="action_back_to_configuration" type="object" string="Back" invisible="step != 'review'"/>
+                    <button name="action_activate" type="object" string="Activate" class="btn-primary" invisible="step != 'review'"/>
+                    <button special="cancel" string="Cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

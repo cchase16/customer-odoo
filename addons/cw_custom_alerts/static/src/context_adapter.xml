@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="cw_custom_alerts.CustomAlertCogMenu">
+        <DropdownItem class="'o_menu_item'" onSelected.bind="createCustomAlert">
+            <i class="fa fa-bell-o fa-fw me-1"/>Create a custom alert
+        </DropdownItem>
+    </t>
+</templates>
