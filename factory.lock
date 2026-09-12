@@ -6,7 +6,7 @@ source:
   configuration: factory.yaml
   configuration_sha256: 7034aaf023317f39b2e75ee1f448819c39aab8aa08dae789ca050815b77e7c73
 resolved:
-  resolved_at: 2026-09-12T03:17:08.526Z
+  resolved_at: 2026-09-12T03:27:37.307Z
   resolver: manual_local_resolver
   factory_release:
     repository: ../Odoo-development-factory
