@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_alert_rule_user,alert.rule user,cw_custom_alerts.model_alert_rule,cw_custom_alerts.group_alert_user,1,1,1,1
+access_alert_rule_manager,alert.rule manager,cw_custom_alerts.model_alert_rule,cw_custom_alerts.group_alert_manager,1,1,1,1
+access_alert_notification_user,alert.notification user,cw_custom_alerts.model_alert_notification,cw_custom_alerts.group_alert_user,1,1,0,0
+access_alert_notification_manager,alert.notification manager,cw_custom_alerts.model_alert_notification,cw_custom_alerts.group_alert_manager,1,1,1,1
+access_alert_rule_wizard_user,alert.rule.wizard user,cw_custom_alerts.model_alert_rule_wizard,cw_custom_alerts.group_alert_user,1,1,1,1
+access_alert_rule_wizard_manager,alert.rule.wizard manager,cw_custom_alerts.model_alert_rule_wizard,cw_custom_alerts.group_alert_manager,1,1,1,1

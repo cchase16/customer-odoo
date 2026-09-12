@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<templates xml:space="preserve">
+    <t t-name="cw_custom_alerts.CustomAlertInbox">
+        <Dropdown position="'bottom-end'" menuClass="'o_cw_alerts_dropdown'">
+            <button class="o_menu_systray_item o_cw_alerts_toggle btn btn-link"
+                    type="button" aria-label="Custom alerts" title="Custom alerts">
+                <i class="fa fa-bell" role="img" aria-hidden="true"/>
+                <span t-if="this.state.count"
+                      class="o_cw_alerts_count badge rounded-pill bg-danger"
+                      aria-live="polite" t-esc="this.state.count"/>
+            </button>
+            <t t-set-slot="content">
+                <section class="o_cw_alerts_inbox" aria-label="Unread custom alerts">
+                    <header class="d-flex align-items-center justify-content-between gap-3 px-3 py-2">
+                        <strong>Alerts</strong>
+                        <DropdownItem t-if="this.state.count" onSelected.bind="markAllRead">
+                            Mark all read
+                        </DropdownItem>
+                    </header>
+                    <div t-if="!this.state.notifications.length" class="text-muted px-3 py-3">
+                        No unread alerts
+                    </div>
+                    <div t-foreach="this.state.notifications" t-as="alert" t-key="alert.id"
+                         class="o_cw_alert_row border-top">
+                        <DropdownItem onSelected="() => this.openAlert(alert)">
+                            <span class="d-block fw-bold" t-esc="alert.subject"/>
+                            <span class="d-block text-muted text-truncate" t-esc="alert.message"/>
+                            <small class="d-block text-muted" t-esc="alert.occurred_at"/>
+                        </DropdownItem>
+                    </div>
+                    <footer class="border-top px-3 py-2">
+                        <DropdownItem onSelected.bind="viewAll">View all</DropdownItem>
+                    </footer>
+                </section>
+            </t>
+        </Dropdown>
+    </t>
+</templates>
