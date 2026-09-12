@@ -28,8 +28,8 @@
                             t-att-tabindex="itemTabIndex(itemIndex)"
                             t-att-aria-disabled="item.disabled ? 'true' : 'false'"
                             t-att-aria-describedby="item.disabledReason ? reasonId(item) : undefined"
-                            t-on-click="(event) => onItemClick(item, itemIndex, event)"
-                            t-on-mouseenter="() => focusItem(itemIndex)"
+                            t-on-click="(event) => this.onItemClick(item, itemIndex, event)"
+                            t-on-mouseenter="() => this.focusItem(itemIndex)"
                         >
                             <i t-if="item.icon" t-att-class="item.icon" aria-hidden="true"/>
                             <span class="o_customer_context_menu_label"><t t-esc="item.label"/></span>

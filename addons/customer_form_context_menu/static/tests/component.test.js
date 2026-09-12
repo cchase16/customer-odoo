@@ -88,6 +88,25 @@ test("renders grouped accessible menu items with disabled reasons", async () => 
     expect(disabledItem.textContent).toContain("This command is unavailable");
 });
 
+test("supports pointer focus and activation", async () => {
+    const executed = [];
+    await mountWithCleanup(ContextMenu, {
+        props: {
+            model,
+            anchor: { clientX: 10, clientY: 20 },
+            onExecute: (item) => executed.push(item.id),
+        },
+    });
+
+    const items = getFixture().querySelectorAll("[role='menuitem']");
+    items[2].dispatchEvent(new MouseEvent("mouseenter", { bubbles: true }));
+    await Promise.resolve();
+    expect(document.activeElement).toBe(items[2]);
+
+    items[2].dispatchEvent(new MouseEvent("click", { bubbles: true, cancelable: true }));
+    expect(executed).toEqual(["fixture.refresh"]);
+});
+
 test("supports roving keyboard focus, activation, and focus restoration", async () => {
     const focusTarget = document.createElement("button");
     document.body.append(focusTarget);

@@ -1,1 +1,1 @@
-"""Customer Odoo form context menu module."""
+"""Right-click Context Menu module."""

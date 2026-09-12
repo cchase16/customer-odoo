@@ -47,6 +47,8 @@ export const mainTableItem = contextMenuRegistry.add({
     isVisible: () => true,
     isEnabled: () => true,
     handler: (_context, services) =>
-        services.dialog.add(MainTablePlaceholderDialog, { body: MAIN_TABLE_LABEL }),
+        services.dialog.add(MainTablePlaceholderDialog, {
+            body: String(MAIN_TABLE_LABEL),
+        }),
 });
 

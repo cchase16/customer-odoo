@@ -24,11 +24,22 @@ export class MenuItemContractError extends Error {}
 export class DuplicateMenuItemError extends MenuItemContractError {}
 export class ReservedMenuItemError extends MenuItemContractError {}
 
+function plainTextValue(value) {
+    if (typeof value === "string") {
+        return value;
+    }
+    if (value instanceof String) {
+        return String.prototype.valueOf.call(value);
+    }
+    return null;
+}
+
 function assertText(value, field, identifier, { optional = false } = {}) {
     if (optional && value === undefined) {
         return;
     }
-    if (typeof value !== "string" || !value.trim()) {
+    const text = plainTextValue(value);
+    if (text === null || !text.trim()) {
         throw new MenuItemContractError(
             `Menu item "${identifier}" requires a non-empty text ${field}`
         );
@@ -99,7 +110,10 @@ function normalizeDefinition(definition) {
     assertPredicate(isEnabled, "isEnabled", id);
     assertHandler(definition.handler, id);
     if (definition.disabledReason !== undefined) {
-        if (typeof definition.disabledReason !== "string" && typeof definition.disabledReason !== "function") {
+        if (
+            plainTextValue(definition.disabledReason) === null &&
+            typeof definition.disabledReason !== "function"
+        ) {
             throw new MenuItemContractError(
                 `Menu item "${id}" requires a text or synchronous disabledReason`
             );
@@ -213,11 +227,12 @@ export class MenuItemRegistry extends EventBus {
             }
             groups.get(definition.group).items.push({
                 id: definition.id,
-                label: definition.label,
+                label: String(definition.label),
                 icon: definition.icon,
                 sequence: definition.sequence,
                 disabled: !enabled,
-                disabledReason,
+                disabledReason:
+                    disabledReason === undefined ? undefined : String(disabledReason),
                 handler: definition.handler,
             });
         }

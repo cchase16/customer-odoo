@@ -96,6 +96,41 @@ test("validates definitions and rejects asynchronous predicates", () => {
     expect(() => menu.buildModel()).toThrow(MenuItemContractError);
 });
 
+test("accepts lazy translated strings and resolves them when building the model", () => {
+    class LazyTranslatedString extends String {
+        ready = false;
+
+        toString() {
+            return this.valueOf();
+        }
+
+        valueOf() {
+            if (!this.ready) {
+                throw new Error("Translations have not been loaded");
+            }
+            return `Translated ${String.prototype.valueOf.call(this)}`;
+        }
+    }
+
+    const label = new LazyTranslatedString("Fixture item");
+    const disabledReason = new LazyTranslatedString("Unavailable");
+    const menu = new MenuItemRegistry();
+    menu.add(
+        definition({
+            id: "fixture.translated",
+            label,
+            isEnabled: () => false,
+            disabledReason,
+        })
+    );
+
+    label.ready = true;
+    disabledReason.ready = true;
+    const item = menu.buildModel()[0].items[0];
+    expect(item.label).toBe("Translated Fixture item");
+    expect(item.disabledReason).toBe("Translated Unavailable");
+});
+
 test("reflects late registrations in the next model without stale cache", () => {
     const menu = new MenuItemRegistry();
     expect(menu.buildModel()).toEqual([]);

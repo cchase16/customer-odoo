@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
 {
-    "name": "Customer Form Context Menu",
-    "summary": "Scaffold for the reusable backend form context-menu extension",
+    "name": "Right-click Context Menu",
+    "summary": "Extensible right-click context menu",
     "version": "19.0.1.0.0",
     "category": "Tools",
     "license": "LGPL-3",
-    "author": "Customer Odoo",
+    "author": "Chris Chase",
     "website": "https://www.odoo.com",
     "depends": ["web"],
     "data": [],

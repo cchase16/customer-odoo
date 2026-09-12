@@ -1,7 +1,9 @@
 # Customer Form Context Menu
 
-This standalone `customer_` add-on is the implementation boundary for the
-approved reusable backend form context-menu run plan.
+This standalone add-on is the implementation boundary for the approved
+reusable backend form context-menu run plan. Its `customer_` prefix predates
+the current `CW`/`cw_` naming convention and is retained as a compatibility
+exception; it is not a precedent for new add-ons.
 
 The initial implementation contains a reusable form context-menu framework,
 Navigation commands, and a removable Main Table placeholder. Release-sensitive
