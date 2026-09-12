@@ -17,7 +17,11 @@ delivery:
   local_path: ../customer-odoo-delivery
 
 conventions:
-  module_prefix: customer_
+  generic_prefix: CW
+  system_name_format: "CW_{PascalCaseName}"
+  module_prefix: cw_
+  legacy_module_prefixes:
+    - customer_
   license: LGPL-3
 
 quality_gates:

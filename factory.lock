@@ -4,9 +4,9 @@ lock_version: 1
 status: resolved
 source:
   configuration: factory.yaml
-  configuration_sha256: c6c825bc87d05a8d61cd29e6fef9dbf3f1b7230d3222e074d4081495129b5f09
+  configuration_sha256: fa0e7974ed0ec2b5b18c38df6117a6e20122c074f511e4f2ccf6f764c66e5eb8
 resolved:
-  resolved_at: 2026-09-10T06:15:19.600Z
+  resolved_at: 2026-09-12T03:10:28.053Z
   resolver: manual_local_resolver
   factory_release:
     repository: ../Odoo-development-factory
