@@ -1,6 +1,6 @@
 # Customer Odoo
 
-Deployable Odoo Community Edition customizations for this product.
+Deployable Odoo Community Edition customizations created with the delivery orchestrator.
 
 This is a conventional Odoo add-ons repository. It must remain buildable, testable, and deployable without the development factory.
 
