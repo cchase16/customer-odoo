@@ -6,8 +6,9 @@ implementation. It is intentionally separate from the approved run plan.
 ## Product and deployment
 
 - Product contract: `factory.yaml` identifies an Odoo add-ons repository,
-  module prefix `customer_`, LGPL-3 licensing, and `addons/` as the add-on
-  path.
+  the current generic prefix `CW` (`cw_` for Odoo technical module names),
+  LGPL-3 licensing, and `addons/` as the add-on path. This add-on's existing
+  `customer_` prefix is a retained legacy exception, not the naming convention.
 - Reference product baseline: `39082176e3b543792bc78c028a4eaf091f9548bf`.
 - Odoo source: `E:\Dev\Odoo\Odoo-19.0`.
 - Runtime command: `C:\Program Files\Odoo 19.0.20260802\python\python.exe`.
