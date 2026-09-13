@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from odoo.exceptions import UserError
+from odoo import Command
+from odoo.exceptions import AccessError, UserError
 from odoo.tests.common import TransactionCase
 
 
@@ -58,3 +59,27 @@ class TestAlertContextAdapter(TransactionCase):
             self.adapter.capture(self._payload(viewId=wrong_view.id))
         with self.assertRaises(UserError):
             self.adapter.capture(self._payload(modelName="res.users.settings"))
+
+    def test_capture_validates_matching_action_groups_with_odoo_19_fields(self):
+        action = self.env["ir.actions.act_window"].create({
+            "name": "Matching partner action",
+            "res_model": "res.partner",
+            "view_mode": "list,form",
+        })
+        captured = self.adapter.capture(self._payload(actionId=action.id))
+        self.assertEqual(captured["action_id"], action.id)
+
+        restricted_group = self.env["res.groups"].create({"name": "Restricted partner action"})
+        action.group_ids = [Command.link(restricted_group.id)]
+        user = self.env["res.users"].create({
+            "name": "Alert action tester",
+            "login": "alert-action-tester",
+            "email": "alert-action-tester@example.com",
+            "group_ids": [Command.link(self.env.ref("base.group_system").id)],
+        })
+        with self.assertRaises(AccessError):
+            self.adapter.with_user(user).capture(self._payload(actionId=action.id))
+
+        user.group_ids = [Command.link(restricted_group.id)]
+        captured = self.adapter.with_user(user).capture(self._payload(actionId=action.id))
+        self.assertEqual(captured["action_id"], action.id)

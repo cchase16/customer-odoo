@@ -24,6 +24,7 @@ class TestAlertRuleWizard(TransactionCase):
     def test_list_context_previews_reviews_and_activates(self):
         action = self.env["alert.rule"].action_open_wizard_from_context(self._payload())
         wizard = self.env["alert.rule.wizard"].browse(action["res_id"])
+        self.assertEqual(wizard.model_name, "res.partner")
         self.assertEqual(wizard.scope_type, "captured_domain")
         wizard.action_preview()
         self.assertGreaterEqual(wizard.preview_count, 0)

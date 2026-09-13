@@ -46,11 +46,31 @@ function visibleListFields(env) {
     );
 }
 
-function visibleFormFields(env) {
+export function visibleFormFields(env) {
     const nodes = env.config.viewArch?.querySelectorAll?.("field") || [];
-    const evalContext = env.model.root.evalContext || {};
+    const root = env.model.root;
+    const evalContext = root.evalContextWithVirtualIds || root.evalContext || {};
     return [...nodes]
-        .filter((node) => !node.getAttribute("invisible") || !evaluateBooleanExpr(node.getAttribute("invisible"), evalContext))
+        // Embedded relational subviews use the child model's evaluation
+        // context. Their fields cannot be evaluated against the parent form.
+        .filter((node) => !node.parentElement?.closest?.("field"))
+        .filter((node) => {
+            const fieldName = node.getAttribute("name");
+            if (!fieldName || !(fieldName in (root.activeFields || {}))) {
+                return false;
+            }
+            const invisible = node.getAttribute("invisible");
+            if (!invisible) {
+                return true;
+            }
+            try {
+                return !evaluateBooleanExpr(invisible, evalContext);
+            } catch {
+                // A bad modifier must not prevent alert creation. The server
+                // remains authoritative and filters the submitted field list.
+                return false;
+            }
+        })
         .map((node) => node.getAttribute("name"))
         .filter(Boolean);
 }

@@ -80,7 +80,7 @@ class AlertContextAdapter(models.AbstractModel):
         if not action or action.res_model != model_name:
             raise UserError("The originating action does not match the selected model.")
         action.check_access("read")
-        if action.groups_id and not (action.groups_id & self.env.user.groups_id):
+        if action.group_ids and not (action.group_ids & self.env.user.all_group_ids):
             raise AccessError("You cannot use the originating action.")
         return action
 

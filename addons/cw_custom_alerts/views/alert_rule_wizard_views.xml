@@ -10,13 +10,14 @@
                     <group invisible="step != 'configure'">
                         <field name="name"/>
                         <field name="model_id"/>
+                        <field name="model_name" invisible="1"/>
                         <field name="event_type"/>
                         <field name="field_id" domain="[('model_id', '=', model_id)]" invisible="event_type in ['record_created', 'record_deleted']"/>
                         <field name="comparison_value_json" invisible="event_type not in ['field_becomes', 'field_is_no_longer']"/>
                         <field name="scope_type"/>
                         <field name="source_record_id" invisible="1"/>
                         <field name="scope_domain_json" invisible="scope_type != 'captured_domain'"/>
-                        <field name="condition_domain_input" widget="domain" options="{'model': model_id.model, 'allow_expressions': False}"/>
+                        <field name="condition_domain_input" widget="domain" options="{'model': 'model_name', 'allow_expressions': False}"/>
                         <field name="expires_at"/>
                     </group>
                     <group string="Relative date" invisible="event_type not in ['date_relative_before', 'date_relative_after'] or step != 'configure'">

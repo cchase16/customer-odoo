@@ -14,6 +14,7 @@ class AlertRuleWizard(models.TransientModel):
 
     name = fields.Char(string="Rule Name", required=True, default=lambda self: _("New custom alert"))
     model_id = fields.Many2one("ir.model", string="Watched Model", required=True, readonly=True)
+    model_name = fields.Char(related="model_id.model", string="Technical Model", readonly=True)
     action_id = fields.Many2one("ir.actions.act_window", string="Origin Action", readonly=True)
     view_id = fields.Many2one("ir.ui.view", string="Origin View", readonly=True)
     source_record_id = fields.Integer(string="Source Record", readonly=True)

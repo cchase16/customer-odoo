@@ -1,7 +1,7 @@
 /** @odoo-module */
 
 import { expect, test } from "@odoo/hoot";
-import { buildFormContext, buildListContext } from "../src/context_adapter";
+import { buildFormContext, buildListContext, visibleFormFields } from "../src/context_adapter";
 
 test("list context keeps a JSON-safe resolved domain and unique visible fields", () => {
     const domain = [["state", "=", "sale"]];
@@ -42,4 +42,36 @@ test("form context carries only a persisted record identifier", () => {
         resolvedDomain: [],
         visibleFields: ["partner_id"],
     });
+});
+
+test("form field capture ignores nested subview modifiers", () => {
+    const viewArch = new DOMParser().parseFromString(`
+        <form>
+            <field name="partner_id"/>
+            <field name="state" invisible="state == 'cancel'"/>
+            <field name="order_line">
+                <list>
+                    <field name="display_type" invisible="display_type not in ['line_section', 'line_subsection']"/>
+                </list>
+            </field>
+            <field name="unsafe_field" invisible="missing_parent_value"/>
+        </form>
+    `, "text/xml").documentElement;
+    const fields = visibleFormFields({
+        config: { viewArch },
+        model: {
+            root: {
+                activeFields: {
+                    partner_id: {},
+                    state: {},
+                    order_line: {},
+                    unsafe_field: {},
+                },
+                evalContext: { state: "cancel" },
+                evalContextWithVirtualIds: { state: "draft" },
+            },
+        },
+    });
+
+    expect(fields).toEqual(["partner_id", "state", "order_line"]);
 });
