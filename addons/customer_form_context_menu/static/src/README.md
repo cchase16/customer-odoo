@@ -6,6 +6,5 @@ The add-on's release-sensitive Odoo web-client access belongs in
 removable `providers/` modules.
 
 The add-on has no models, controllers, routes, or RPC calls during menu
-opening. Navigation and Main Table behavior are independently removable
-provider contributions and delegate operations through the public service
-facade.
+opening. Navigation and extension behavior are independently removable provider
+contributions and delegate operations through the public service facade.

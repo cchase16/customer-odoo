@@ -22,7 +22,6 @@
             "customer_form_context_menu/static/src/components/context_menu.scss",
             "customer_form_context_menu/static/src/components/context_menu_renderer.js",
             "customer_form_context_menu/static/src/providers/navigation_provider.js",
-            "customer_form_context_menu/static/src/providers/main_table_provider.js",
             "customer_form_context_menu/static/src/bootstrap.js",
         ],
         "web.assets_unit_tests": [

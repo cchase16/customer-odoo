@@ -75,4 +75,16 @@
         margin: 0.25rem 0;
         background: var(--o-border-color, #dee2e6);
     }
+
+    .o_customer_context_menu_native_hint {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        margin-top: 0.25rem;
+        padding: 0.45rem 0.75rem;
+        border-top: 1px solid var(--o-border-color, #dee2e6);
+        color: var(--o-muted-color, #6c757d);
+        font-size: 0.75rem;
+        user-select: none;
+    }
 }

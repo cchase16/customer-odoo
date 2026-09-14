@@ -73,12 +73,13 @@ function item(id = "fixture.command", handler = () => "done", overrides = {}) {
     };
 }
 
-function dispatchContextMenu(target, clientX = 20, clientY = 30) {
+function dispatchContextMenu(target, clientX = 20, clientY = 30, options = {}) {
     const event = new MouseEvent("contextmenu", {
         bubbles: true,
         cancelable: true,
         clientX,
         clientY,
+        ...options,
     });
     target.dispatchEvent(event);
     return event;
@@ -130,6 +131,22 @@ test("opens from Context Menu and Shift+F10 keyboard anchors", () => {
     button.dispatchEvent(shiftF10);
     expect(shiftF10.defaultPrevented).toBe(true);
     expect(rendered[1].anchor).toEqual({ clientX: 40, clientY: 80 });
+});
+
+test("Shift + right-click preserves the native browser menu", () => {
+    const { root, button } = makeRoot();
+    const { coordinator, rendered } = makeCoordinator({ definitions: [item()] });
+    coordinator.registerForm(root, () => ({ owner: "form" }));
+    coordinator.start();
+
+    dispatchContextMenu(button);
+    expect(Boolean(coordinator.openMenu)).toBe(true);
+
+    const nativeEvent = dispatchContextMenu(button, 20, 30, { shiftKey: true });
+
+    expect(nativeEvent.defaultPrevented).toBe(false);
+    expect(coordinator.openMenu).toBe(null);
+    expect(rendered).toHaveLength(1);
 });
 
 test("preserves the native menu until a non-empty model is valid", () => {

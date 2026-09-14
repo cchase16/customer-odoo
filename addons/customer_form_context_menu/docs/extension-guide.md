@@ -28,13 +28,10 @@ asynchronous and must use only the documented facade. The coordinator closes
 the menu before execution, invokes a selected item at most once, and routes a
 failed item without corrupting other registrations.
 
-The built-in Navigation items are ordinary registry contributions. The Main
-Table placeholder is also an ordinary, independently removable contribution:
-its current callback opens a modal containing exactly `Go to the Main Table
-form`, with only a `Close` action and no navigation. Future Main Table
-navigation replaces that provider callback; it does not add a command-specific
-branch to the framework.
+The built-in Navigation items are ordinary registry contributions. Additional
+commands, such as the Alerts contribution, remain independently removable and
+do not add command-specific branches to the framework.
 
 Browser editing, spelling, and inspection commands are not reproduced by the
-initial release. Users can retain those workflows with keyboard shortcuts or
-the native browser menu outside supported backend forms.
+custom menu. Users can retain those workflows with keyboard shortcuts or use
+Shift + right-click to bypass the custom menu and open the native browser menu.

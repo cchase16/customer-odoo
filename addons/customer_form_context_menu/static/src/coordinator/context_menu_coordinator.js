@@ -19,6 +19,7 @@ export const CLOSE_REASONS = Object.freeze({
     RESIZE: "resize",
     SCROLL: "scroll",
     EXECUTE: "execute",
+    NATIVE_BYPASS: "native-bypass",
     DESTROY: "destroy",
 });
 
@@ -214,8 +215,14 @@ export class ContextMenuCoordinator extends EventBus {
         return null;
     }
 
-    handleContextMenu(event) {
+    handleContextMenu(event, { allowNativeBypass = event.type === "contextmenu" } = {}) {
         if (!this.started || event.defaultPrevented) {
+            return false;
+        }
+        if (allowNativeBypass && event.shiftKey) {
+            // Shift + right-click is the explicit escape hatch to the browser's
+            // native editing, spelling, extension, and developer menu.
+            this.close(CLOSE_REASONS.NATIVE_BYPASS, { restoreFocus: false });
             return false;
         }
         const registration = this.findRegistration(event);
@@ -308,7 +315,11 @@ export class ContextMenuCoordinator extends EventBus {
                     keyboardEvent.defaultPrevented = true;
                 },
             };
-            const handled = this.handleContextMenu(keyboardEvent);
+            // Shift+F10 is an accessibility shortcut for this custom menu, not
+            // the pointer-only Shift + right-click native-menu bypass.
+            const handled = this.handleContextMenu(keyboardEvent, {
+                allowNativeBypass: false,
+            });
             if (handled) {
                 event.stopPropagation();
             }

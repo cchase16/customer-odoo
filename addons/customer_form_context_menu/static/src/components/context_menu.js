@@ -1,6 +1,7 @@
 /** @odoo-module **/
 
 import { Component, onMounted, onWillUnmount, useRef, useState } from "@odoo/owl";
+import { _t } from "@web/core/l10n/translation";
 
 const VIEWPORT_MARGIN = 4;
 const FALLBACK_MENU_SIZE = Object.freeze({ width: 280, height: 320 });
@@ -115,6 +116,14 @@ export class ContextMenu extends Component {
 
     get ariaLabel() {
         return this.props.ariaLabel || "Context menu";
+    }
+
+    get nativeMenuHint() {
+        return _t("Shift + right-click for browser menu");
+    }
+
+    get nativeMenuHintId() {
+        return `${this.menuId}-native-hint`;
     }
 
     get positionStyle() {

@@ -81,7 +81,11 @@ test("renders grouped accessible menu items with disabled reasons", async () => 
     expect("[role='menu']").toHaveCount(1);
     expect("[role='group']").toHaveCount(2);
     expect("[role='separator']").toHaveCount(1);
+    expect(".o_customer_context_menu_native_hint").toHaveText(
+        "Shift + right-click for browser menu"
+    );
     expect("[role='menu']").toHaveAttribute("aria-label", "Context menu");
+    expect("[role='menu']").toHaveAttribute("aria-describedby", /-native-hint$/);
     const disabledItem = getFixture().querySelector("[role='menuitem'][aria-disabled='true']");
     expect(disabledItem.getAttribute("aria-describedby")).toMatch(/reason/);
     expect(disabledItem.textContent).toInclude("Disabled command");

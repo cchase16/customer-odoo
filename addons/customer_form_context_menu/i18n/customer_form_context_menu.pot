@@ -36,10 +36,6 @@ msgstr ""
 msgid "Refresh is unavailable for a new record."
 msgstr ""
 
-#. main_table_provider.js
-msgid "Go to the Main Table form"
-msgstr ""
-
-#. main_table_provider.js
-msgid "Close"
+#. context_menu.js
+msgid "Shift + right-click for browser menu"
 msgstr ""

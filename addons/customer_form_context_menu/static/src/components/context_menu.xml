@@ -8,6 +8,7 @@
             tabindex="-1"
             aria-orientation="vertical"
             t-att-aria-label="ariaLabel"
+            t-att-aria-describedby="nativeMenuHintId"
             t-att-dir="direction"
             t-att-style="positionStyle"
             t-on-keydown="onKeydown"
@@ -40,6 +41,10 @@
                     </t>
                 </div>
             </t>
+            <div t-att-id="nativeMenuHintId" class="o_customer_context_menu_native_hint">
+                <i class="fa fa-info-circle" aria-hidden="true"/>
+                <span><t t-esc="nativeMenuHint"/></span>
+            </div>
         </div>
     </t>
 </templates>
