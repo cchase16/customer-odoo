@@ -19,6 +19,7 @@ class AlertRuleWizard(models.TransientModel):
     view_id = fields.Many2one("ir.ui.view", string="Origin View", readonly=True)
     source_record_id = fields.Integer(string="Source Record", readonly=True)
     visible_fields_json = fields.Json(string="Eligible Visible Fields", readonly=True)
+    selected_field_name = fields.Char(string="Selected Field", readonly=True)
     scope_type = fields.Selection(
         [("current_record", "This record only"), ("captured_domain", "All records matching this view")],
         required=True,
@@ -61,6 +62,7 @@ class AlertRuleWizard(models.TransientModel):
             "companyId": self.company_id.id,
             "resolvedDomain": self.scope_domain_json or [],
             "visibleFields": self.visible_fields_json or [],
+            "selectedFieldName": self.selected_field_name or None,
         }
 
     def _capture_context(self):
@@ -101,6 +103,8 @@ class AlertRuleWizard(models.TransientModel):
         field = self.field_id
         if field and field.model_id != self.model_id:
             raise ValidationError("The watched field must belong to the selected model.")
+        if field and field.name not in (captured["visible_fields"] or []):
+            raise ValidationError("The watched field must be eligible and visible in the captured form.")
         try:
             canonical = validate_rule_configuration(
                 self._configuration_values(),

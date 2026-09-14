@@ -11,8 +11,10 @@
                         <field name="name"/>
                         <field name="model_id"/>
                         <field name="model_name" invisible="1"/>
+                        <field name="visible_fields_json" invisible="1"/>
+                        <field name="selected_field_name" invisible="1"/>
                         <field name="event_type"/>
-                        <field name="field_id" domain="[('model_id', '=', model_id)]" invisible="event_type in ['record_created', 'record_deleted']"/>
+                        <field name="field_id" domain="[('model_id', '=', model_id), ('name', 'in', visible_fields_json)]" invisible="event_type in ['record_created', 'record_deleted']"/>
                         <field name="comparison_value_json" invisible="event_type not in ['field_becomes', 'field_is_no_longer']"/>
                         <field name="scope_type"/>
                         <field name="source_record_id" invisible="1"/>

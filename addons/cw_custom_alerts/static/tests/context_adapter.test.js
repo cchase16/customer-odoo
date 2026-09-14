@@ -44,6 +44,27 @@ test("form context carries only a persisted record identifier", () => {
     });
 });
 
+test("form context carries an explicit selected field without adding other fields", () => {
+    expect(buildFormContext({
+        resModel: "res.partner",
+        actionId: 8,
+        viewId: 9,
+        companyId: 10,
+        recordId: 11,
+        visibleFields: ["email"],
+        selectedFieldName: "email",
+    })).toEqual({
+        modelName: "res.partner",
+        actionId: 8,
+        viewId: 9,
+        recordId: 11,
+        companyId: 10,
+        resolvedDomain: [],
+        visibleFields: ["email"],
+        selectedFieldName: "email",
+    });
+});
+
 test("form field capture ignores nested subview modifiers", () => {
     const viewArch = new DOMParser().parseFromString(`
         <form>

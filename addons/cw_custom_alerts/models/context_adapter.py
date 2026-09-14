@@ -60,6 +60,14 @@ class AlertContextAdapter(models.AbstractModel):
             record.check_access("read")
 
         visible_fields = self._eligible_visible_fields(target_model, payload.get("visibleFields"))
+        selected_field_name = payload.get("selectedFieldName")
+        if selected_field_name in (None, False, ""):
+            selected_field_name = None
+        elif not isinstance(selected_field_name, str):
+            raise UserError("The selected field name must be text.")
+        if selected_field_name:
+            visible_fields = [selected_field_name] if selected_field_name in visible_fields else []
+            selected_field_name = visible_fields[0] if visible_fields else None
         return {
             "model_name": model_name,
             "action_id": action.id if action else False,
@@ -68,6 +76,7 @@ class AlertContextAdapter(models.AbstractModel):
             "company_id": self.env.company.id,
             "resolved_domain": domain,
             "visible_fields": visible_fields,
+            "selected_field_name": selected_field_name,
             "scope_type": "current_record" if record_id else "captured_domain",
         }
 

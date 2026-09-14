@@ -23,8 +23,16 @@ export function buildListContext({ resModel, actionId, viewId, companyId, domain
     };
 }
 
-export function buildFormContext({ resModel, actionId, viewId, companyId, recordId, visibleFields }) {
-    return {
+export function buildFormContext({
+    resModel,
+    actionId,
+    viewId,
+    companyId,
+    recordId,
+    visibleFields,
+    selectedFieldName,
+}) {
+    const payload = {
         modelName: resModel,
         actionId: actionId || null,
         viewId: viewId || null,
@@ -33,11 +41,15 @@ export function buildFormContext({ resModel, actionId, viewId, companyId, record
         resolvedDomain: [],
         visibleFields: [...new Set(visibleFields || [])],
     };
+    if (typeof selectedFieldName === "string" && selectedFieldName) {
+        payload.selectedFieldName = selectedFieldName;
+    }
+    return payload;
 }
 
-async function openWizard(env, payload) {
-    const action = await env.services.orm.call("alert.rule", "action_open_wizard_from_context", [payload]);
-    return env.services.action.doAction(action);
+export async function openAlertWizard(services, payload) {
+    const action = await services.orm.call("alert.rule", "action_open_wizard_from_context", [payload]);
+    return services.action.doAction(action);
 }
 
 function visibleListFields(env) {
@@ -99,7 +111,7 @@ export class CustomAlertCogMenu extends Component {
         const payload = this.env.config.viewType === "form"
             ? buildFormContext({ ...common, recordId: root.isNew ? null : root.resId, visibleFields: visibleFormFields(this.env) })
             : buildListContext({ ...common, domain: this.env.searchModel?.domain || [], visibleFields: visibleListFields(this.env) });
-        return openWizard(this.env, payload);
+        return openAlertWizard(this.env.services, payload);
     }
 }
 

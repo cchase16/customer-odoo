@@ -71,8 +71,9 @@ prevent validation of the installable PH-01 boundary.
 
 ## Phase-01 verification notes
 
-- Required dependencies are limited to `base_automation`, `web`, `bus`, and
-  `mail`; no Enterprise or third-party runtime dependency is declared.
+- Required dependencies are limited to `base_automation`, `web`, `bus`,
+  `mail`, and the product's `customer_form_context_menu` extension framework;
+  no Enterprise or external third-party runtime dependency is declared.
 - Production and test asset bundles are explicit.
 - The module-local Python contracts contain no Odoo imports. Release-sensitive
   automation and context adapters are named extension boundaries and are not

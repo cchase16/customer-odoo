@@ -33,6 +33,24 @@ class TestAlertContextAdapter(TransactionCase):
         self.assertEqual(captured["visible_fields"], ["name", "email"])
         self.assertEqual(captured["scope_type"], "captured_domain")
 
+    def test_capture_limits_context_menu_input_to_the_selected_eligible_field(self):
+        captured = self.adapter.capture(self._payload(
+            visibleFields=["name", "email"],
+            selectedFieldName="email",
+        ))
+        self.assertEqual(captured["visible_fields"], ["email"])
+        self.assertEqual(captured["selected_field_name"], "email")
+
+        unsupported = self.adapter.capture(self._payload(
+            visibleFields=["category_id"],
+            selectedFieldName="category_id",
+        ))
+        self.assertEqual(unsupported["visible_fields"], [])
+        self.assertIsNone(unsupported["selected_field_name"])
+
+        with self.assertRaises(UserError):
+            self.adapter.capture(self._payload(selectedFieldName=42))
+
     def test_capture_form_requires_existing_readable_record(self):
         captured = self.adapter.capture(self._payload(recordId=self.partner.id, resolvedDomain=[]))
         self.assertEqual(captured["record_id"], self.partner.id)

@@ -47,6 +47,28 @@ class TestAlertRuleWizard(TransactionCase):
         self.assertTrue(rule)
         self.assertEqual(rule.scope_type, "current_record")
 
+    def test_selected_eligible_field_prefills_changed_event_and_is_exclusive(self):
+        payload = self._payload(self.partner.id)
+        payload.update({
+            "visibleFields": ["name", "email"],
+            "selectedFieldName": "email",
+        })
+        action = self.env["alert.rule"].action_open_wizard_from_context(payload)
+        wizard = self.env["alert.rule.wizard"].browse(action["res_id"])
+
+        self.assertEqual(wizard.event_type, "field_changed")
+        self.assertEqual(wizard.field_id.name, "email")
+        self.assertEqual(wizard.visible_fields_json, ["email"])
+        self.assertEqual(wizard.selected_field_name, "email")
+
+        name_field = self.env["ir.model.fields"].search([
+            ("model_id", "=", wizard.model_id.id),
+            ("name", "=", "name"),
+        ], limit=1)
+        wizard.field_id = name_field
+        with self.assertRaises(ValidationError):
+            wizard.action_review()
+
     def test_activation_revalidates_tampered_wizard_context(self):
         action = self.env["alert.rule"].action_open_wizard_from_context(self._payload(self.partner.id))
         wizard = self.env["alert.rule.wizard"].browse(action["res_id"])

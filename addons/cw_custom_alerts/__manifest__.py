@@ -8,7 +8,7 @@
     "license": "LGPL-3",
     "author": "Customer Odoo",
     "website": "https://www.odoo.com",
-    "depends": ["base_automation", "web", "bus", "mail"],
+    "depends": ["base_automation", "web", "bus", "mail", "customer_form_context_menu"],
     "data": [
         "security/security.xml",
         "security/ir.model.access.csv",
@@ -21,6 +21,7 @@
         "web.assets_backend": [
             "cw_custom_alerts/static/src/alerts_bootstrap.js",
             "cw_custom_alerts/static/src/context_adapter.js",
+            "cw_custom_alerts/static/src/context_menu_provider.js",
             "cw_custom_alerts/static/src/context_adapter.xml",
             "cw_custom_alerts/static/src/notification_service.js",
             "cw_custom_alerts/static/src/notification_systray.js",
@@ -29,6 +30,7 @@
         "web.assets_unit_tests": [
             "cw_custom_alerts/static/src/contracts.js",
             "cw_custom_alerts/static/src/context_adapter.js",
+            "cw_custom_alerts/static/src/context_menu_provider.js",
             "cw_custom_alerts/static/src/notification_service.js",
             "cw_custom_alerts/static/tests/**/*",
         ],

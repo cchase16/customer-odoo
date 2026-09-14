@@ -204,17 +204,29 @@ class AlertRule(models.Model):
         """Create a wizard only after rebuilding the browser-supplied context."""
         captured = self.env["alert.context.adapter"].capture(payload)
         model = self.env["ir.model"]._get(captured["model_name"])
-        wizard = self.env["alert.rule.wizard"].create({
+        wizard_values = {
             "model_id": model.id,
             "action_id": captured["action_id"],
             "view_id": captured["view_id"],
             "source_record_id": captured["record_id"] or False,
             "visible_fields_json": captured["visible_fields"],
+            "selected_field_name": captured["selected_field_name"],
             "scope_type": captured["scope_type"],
             "scope_domain_json": captured["resolved_domain"],
             "company_id": captured["company_id"],
             "recipient_user_id": self.env.user.id,
-        })
+        }
+        if captured["selected_field_name"]:
+            selected_field = self.env["ir.model.fields"].search([
+                ("model_id", "=", model.id),
+                ("name", "=", captured["selected_field_name"]),
+            ], limit=1)
+            if selected_field:
+                wizard_values.update({
+                    "event_type": "field_changed",
+                    "field_id": selected_field.id,
+                })
+        wizard = self.env["alert.rule.wizard"].create(wizard_values)
         return {
             "type": "ir.actions.act_window",
             "name": "Create a custom alert",
