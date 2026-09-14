@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="customer_form_context_menu.ContextMenu">
+        <div
+            t-ref="menu"
+            class="o_customer_context_menu shadow"
+            role="menu"
+            tabindex="-1"
+            aria-orientation="vertical"
+            t-att-aria-label="ariaLabel"
+            t-att-dir="direction"
+            t-att-style="positionStyle"
+            t-on-keydown="onKeydown"
+        >
+            <t t-foreach="groups" t-as="group" t-key="group.id">
+                <div t-if="group.separator" class="o_customer_context_menu_separator" role="separator"/>
+                <div class="o_customer_context_menu_group" role="group" t-att-aria-label="group.label">
+                    <div class="o_customer_context_menu_group_label" role="presentation">
+                        <t t-esc="group.label"/>
+                    </div>
+                    <t t-foreach="group.items" t-as="item" t-key="item.id">
+                        <t t-set="itemIndex" t-value="items.indexOf(item)"/>
+                        <div
+                            t-att-class="itemClass(item, itemIndex)"
+                            role="menuitem"
+                            t-att-data-menu-index="itemIndex"
+                            t-att-id="itemId(itemIndex)"
+                            t-att-tabindex="itemTabIndex(itemIndex)"
+                            t-att-aria-disabled="item.disabled ? 'true' : 'false'"
+                            t-att-aria-describedby="item.disabledReason ? reasonId(item) : undefined"
+                            t-on-click="(event) => this.onItemClick(item, itemIndex, event)"
+                            t-on-mouseenter="() => this.focusItem(itemIndex)"
+                        >
+                            <i t-if="item.icon" t-att-class="item.icon" aria-hidden="true"/>
+                            <span class="o_customer_context_menu_label"><t t-esc="item.label"/></span>
+                            <span t-if="item.disabledReason" class="o_customer_context_menu_reason" t-att-id="reasonId(item)">
+                                <t t-esc="item.disabledReason"/>
+                            </span>
+                        </div>
+                    </t>
+                </div>
+            </t>
+        </div>
+    </t>
+</templates>

@@ -1,0 +1,45 @@
+# Translation template for customer_form_context_menu.
+
+#. navigation_provider.js:44
+msgid "Back"
+msgstr ""
+
+#. navigation_provider.js:54
+msgid "Previous record"
+msgstr ""
+
+#. navigation_provider.js:59
+msgid "Previous record is unavailable for a new record."
+msgstr ""
+
+#. navigation_provider.js:60
+msgid "This is the first record."
+msgstr ""
+
+#. navigation_provider.js:67
+msgid "Next record"
+msgstr ""
+
+#. navigation_provider.js:72
+msgid "Next record is unavailable for a new record."
+msgstr ""
+
+#. navigation_provider.js:73
+msgid "This is the last record."
+msgstr ""
+
+#. navigation_provider.js:80
+msgid "Refresh record"
+msgstr ""
+
+#. navigation_provider.js:84
+msgid "Refresh is unavailable for a new record."
+msgstr ""
+
+#. main_table_provider.js
+msgid "Go to the Main Table form"
+msgstr ""
+
+#. main_table_provider.js
+msgid "Close"
+msgstr ""
